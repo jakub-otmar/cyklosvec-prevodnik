@@ -722,167 +722,182 @@ button:hover {
     }
 
 
-    function buildCard(product, label) {
+function buildCard(product, label) {
 
-        var safeName = escapeHtml(product.name);
-        var safeDescription = escapeHtml(product.description);
-        var safeCode = escapeHtml(product.code);
-        var safePrice = escapeHtml(product.price);
+    var safeName = escapeHtml(product.name);
+    var safeDescription = escapeHtml(product.description);
+    var safeCode = escapeHtml(product.code);
+    var safePrice = escapeHtml(product.price);
 
-        var safeImage = escapeHtml(product.image);
-        var safeUrl = escapeHtml(product.url);
-        var safeLabel = escapeHtml(label);
+    var safeImage = escapeHtml(product.image);
+    var safeUrl = escapeHtml(product.url);
+    var safeLabel = escapeHtml(label);
 
+    var card = "";
 
-        var card = "";
+    card += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="220" style="width:220px;border:1px solid #e1e5e9;border-collapse:separate;border-spacing:0;border-radius:8px;background:#ffffff;">';
 
+    card += '<tbody>';
+    card += '<tr>';
 
-        card += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="220" style="width:220px;border:1px solid #e1e5e9;border-collapse:separate;border-spacing:0;border-radius:8px;background:#ffffff;">';
-
-        card += '<tbody>';
-
-        card += '<tr>';
-
-        card += '<td valign="top" style="padding:15px 13px 16px 13px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;vertical-align:top;">';
+    card += '<td valign="top" style="padding:15px 13px 16px 13px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;vertical-align:top;">';
 
 
-        if (label) {
+    /* ŠTÍTEK */
 
-            card += '<div style="height:27px;">';
+    if (label) {
 
-            card += '<span style="display:inline-block;padding:5px 8px;background:#ffd302;border-radius:5px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;font-weight:bold;color:#111111;">';
+        card += '<div style="height:27px;">';
 
-            card += safeLabel;
+        card += '<span style="display:inline-block;padding:5px 8px;background:#ffd302;border-radius:5px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;font-weight:bold;color:#111111;">';
 
-            card += '</span>';
+        card += safeLabel;
 
-            card += '</div>';
-
-        } else {
-
-            card += '<div style="height:27px;font-size:1px;line-height:1px;">&nbsp;</div>';
-
-        }
-
-
-        card += '<div style="height:67px;margin-top:9px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:bold;color:#111827;text-transform:uppercase;overflow:hidden;">';
-
-        if (product.url) {
-
-            card += '<a href="' + safeUrl + '" target="_blank" style="color:#111827;text-decoration:none;">';
-
-        }
-
-        card += safeName;
-
-        if (product.url) {
-            card += '</a>';
-        }
+        card += '</span>';
 
         card += '</div>';
 
+    } else {
 
-        card += '<div style="height:190px;margin-top:7px;text-align:center;">';
-
-        if (product.url) {
-
-            card += '<a href="' + safeUrl + '" target="_blank" style="text-decoration:none;">';
-
-        }
-
-        if (product.image) {
-
-            card += '<img src="' + safeImage + '" width="180" alt="' + safeName + '" style="display:block;width:180px;max-width:180px;height:auto;margin:0 auto;border:0;outline:none;text-decoration:none;">';
-
-        }
-
-        if (product.url) {
-            card += '</a>';
-        }
-
-        card += '</div>';
-
-
-        card += '<div style="height:82px;margin-top:9px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:17px;color:#343a40;overflow:hidden;">';
-
-        card += safeDescription;
-
-        card += '</div>';
-
-
-        card += '<div style="height:1px;margin:11px 0 9px 0;background:#e4e7ea;font-size:1px;line-height:1px;">&nbsp;</div>';
-
-
-        card += '<div style="height:17px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:17px;color:#7a838d;">';
-
-        if (product.code) {
-
-            card += 'Kód: ' + safeCode;
-
-        } else {
-
-            card += '&nbsp;';
-
-        }
-
-        card += '</div>';
-
-
-        card += '<div style="margin-top:3px;font-family:Arial,Helvetica,sans-serif;font-size:25px;line-height:30px;font-weight:bold;color:#000000;">';
-
-        card += safePrice || '&nbsp;';
-
-        card += '</div>';
-
-
-        card += '<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;color:#555d66;">';
-
-        card += 's DPH';
-
-        card += '</div>';
-
-
-        card += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;margin-top:11px;border-collapse:separate;border-spacing:0;">';
-
-        card += '<tbody><tr>';
-
-        card += '<td align="center" bgcolor="#0875e1" style="background:#0875e1;border-radius:6px;text-align:center;">';
-
-        if (product.url) {
-
-            card += '<a href="' + safeUrl + '" target="_blank" style="display:block;padding:11px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;text-decoration:none;white-space:nowrap;">';
-
-            card += '&rarr;&nbsp; ZOBRAZIT PRODUKT';
-
-            card += '</a>';
-
-        } else {
-
-            card += '<span style="display:block;padding:11px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;">';
-
-            card += 'ZOBRAZIT PRODUKT';
-
-            card += '</span>';
-
-        }
-
-        card += '</td>';
-
-        card += '</tr></tbody></table>';
-
-
-        card += '</td>';
-
-        card += '</tr>';
-
-        card += '</tbody>';
-
-        card += '</table>';
-
-
-        return card;
+        card += '<div style="height:27px;font-size:1px;line-height:1px;">&nbsp;</div>';
 
     }
+
+
+    /* NÁZEV */
+
+    card += '<div style="height:67px;margin-top:7px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:bold;color:#111827;text-transform:uppercase;overflow:hidden;">';
+
+    if (product.url) {
+
+        card += '<a href="' + safeUrl + '" target="_blank" style="color:#111827;text-decoration:none;">';
+
+    }
+
+    card += safeName;
+
+    if (product.url) {
+        card += '</a>';
+    }
+
+    card += '</div>';
+
+
+    /* OBRÁZEK - 170 px vysoká oblast, obrázek vertikálně vystředěný */
+
+    card += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;height:170px;border-collapse:collapse;border-spacing:0;">';
+
+    card += '<tbody><tr>';
+
+    card += '<td height="170" valign="middle" align="center" style="height:170px;text-align:center;vertical-align:middle;">';
+
+    if (product.url) {
+
+        card += '<a href="' + safeUrl + '" target="_blank" style="display:block;text-decoration:none;">';
+
+    }
+
+    if (product.image) {
+
+        card += '<img src="' + safeImage + '" width="190" alt="' + safeName + '" style="display:block;width:190px;max-width:190px;height:auto;margin:0 auto;border:0;outline:none;text-decoration:none;">';
+
+    }
+
+    if (product.url) {
+        card += '</a>';
+    }
+
+    card += '</td>';
+
+    card += '</tr></tbody></table>';
+
+
+    /* POPIS */
+
+    card += '<div style="height:82px;margin-top:5px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:17px;color:#343a40;overflow:hidden;">';
+
+    card += safeDescription;
+
+    card += '</div>';
+
+
+    /* ODDĚLOVACÍ LINKA */
+
+    card += '<div style="height:1px;margin:9px 0 9px 0;background:#e4e7ea;font-size:1px;line-height:1px;">&nbsp;</div>';
+
+
+    /* KÓD */
+
+    card += '<div style="height:17px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:17px;color:#7a838d;">';
+
+    if (product.code) {
+
+        card += 'Kód: ' + safeCode;
+
+    } else {
+
+        card += '&nbsp;';
+
+    }
+
+    card += '</div>';
+
+
+    /* CENA */
+
+    card += '<div style="margin-top:3px;font-family:Arial,Helvetica,sans-serif;font-size:25px;line-height:30px;font-weight:bold;color:#000000;">';
+
+    card += safePrice || '&nbsp;';
+
+    card += '</div>';
+
+
+    card += '<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;color:#555d66;">';
+
+    card += 's DPH';
+
+    card += '</div>';
+
+
+    /* CTA */
+
+    card += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;margin-top:11px;border-collapse:separate;border-spacing:0;">';
+
+    card += '<tbody><tr>';
+
+    card += '<td align="center" bgcolor="#202124" style="background:#202124;border-radius:6px;text-align:center;">';
+
+    if (product.url) {
+
+        card += '<a href="' + safeUrl + '" target="_blank" style="display:block;padding:11px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;text-decoration:none;white-space:nowrap;">';
+
+        card += '<span style="color:#ffd302;">&rarr;</span>&nbsp; ZOBRAZIT PRODUKT';
+
+        card += '</a>';
+
+    } else {
+
+        card += '<span style="display:block;padding:11px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;">';
+
+        card += '<span style="color:#ffd302;">&rarr;</span>&nbsp; ZOBRAZIT PRODUKT';
+
+        card += '</span>';
+
+    }
+
+    card += '</td>';
+
+    card += '</tr></tbody></table>';
+
+
+    card += '</td>';
+    card += '</tr>';
+    card += '</tbody>';
+    card += '</table>';
+
+    return card;
+
+}
 
 
     function buildOutput(products, label) {
