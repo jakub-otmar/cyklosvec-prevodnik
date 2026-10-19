@@ -722,185 +722,261 @@ button:hover {
     }
 
 
-function buildCard(product, label) {
-
-    var safeName = escapeHtml(product.name);
-    var safeDescription = escapeHtml(product.description);
-    var safeCode = escapeHtml(product.code);
-    var safePrice = escapeHtml(product.price);
-
-    var safeImage = escapeHtml(product.image);
-    var safeUrl = escapeHtml(product.url);
-    var safeLabel = escapeHtml(label);
-
-    var card = "";
-
-    /*
-     * Dlaždice je tvořena jednou tabulkou s pevně definovanými
-     * výškami jednotlivých sekcí. Díky tomu začíná spodní část
-     * (kód, cena, DPH a tlačítko) u všech produktů ve stejné výšce,
-     * i když mají různě dlouhé popisy.
-     */
-    card += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="220" style="width:220px;border:1px solid #e1e5e9;border-collapse:separate;border-spacing:0;border-radius:8px;background:#ffffff;">';
-    card += '<tbody>';
-
-    /* ŠTÍTEK */
-    card += '<tr>';
-    card += '<td height="49" valign="top" style="height:49px;padding:15px 13px 0 13px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;vertical-align:top;">';
-    if (safeLabel) {
-        card += '<span style="display:inline-block;padding:5px 8px;background:#ffd302;border-radius:5px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;font-weight:bold;color:#111111;">';
-        card += safeLabel;
-        card += '</span>';
-    } else {
-        card += '&nbsp;';
-    }
-    card += '</td>';
-    card += '</tr>';
-
-    /* NÁZEV PRODUKTU */
-    card += '<tr>';
-    card += '<td height="74" valign="top" style="height:74px;padding:0 13px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:bold;color:#111827;text-transform:uppercase;vertical-align:top;">';
-    card += '<a href="' + safeUrl + '" target="_blank" style="color:#111827;text-decoration:none;">';
-    card += safeName;
-    card += '</a>';
-    card += '</td>';
-    card += '</tr>';
-
-    /* OBRÁZEK */
-    card += '<tr>';
-    card += '<td height="170" valign="middle" align="center" style="height:170px;padding:0 13px;background:#ffffff;text-align:center;vertical-align:middle;">';
-    card += '<a href="' + safeUrl + '" target="_blank" style="display:block;text-decoration:none;">';
-    card += '<img src="' + safeImage + '" width="190" alt="' + safeName + '" style="display:block;width:190px;max-width:190px;height:auto;margin:0 auto;border:0;outline:none;text-decoration:none;">';
-    card += '</a>';
-    card += '</td>';
-    card += '</tr>';
-
-    /* POPIS – vyhrazený stejně vysoký prostor pro všechny produkty */
-    card += '<tr>';
-    card += '<td height="96" valign="top" style="height:96px;padding:5px 13px 0 13px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:17px;color:#343a40;vertical-align:top;">';
-    card += safeDescription;
-    card += '</td>';
-    card += '</tr>';
-
-    /* ODDĚLOVACÍ ČÁRA */
-    card += '<tr>';
-    card += '<td height="19" valign="middle" style="height:19px;padding:0 13px;background:#ffffff;vertical-align:middle;">';
-    card += '<div style="height:1px;background:#e4e7ea;font-size:1px;line-height:1px;">&nbsp;</div>';
-    card += '</td>';
-    card += '</tr>';
-
-    /* KÓD */
-    card += '<tr>';
-    card += '<td height="20" valign="top" style="height:20px;padding:0 13px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:17px;color:#7a838d;vertical-align:top;">';
-    card += 'Kód: ' + safeCode;
-    card += '</td>';
-    card += '</tr>';
-
-    /* CENA */
-    card += '<tr>';
-    card += '<td height="33" valign="top" style="height:33px;padding:0 13px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:25px;line-height:30px;font-weight:bold;color:#000000;vertical-align:top;">';
-    card += safePrice;
-    card += '</td>';
-    card += '</tr>';
-
-    /* DPH */
-    card += '<tr>';
-    card += '<td height="24" valign="top" style="height:24px;padding:0 13px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;color:#555d66;vertical-align:top;">';
-    card += 's DPH';
-    card += '</td>';
-    card += '</tr>';
-
-    /* TLAČÍTKO – vždy ve stejné řádce */
-    card += '<tr>';
-    card += '<td height="61" valign="bottom" style="height:61px;padding:0 13px 16px 13px;background:#ffffff;vertical-align:bottom;">';
-
-    card += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;border-collapse:separate;border-spacing:0;">';
-    card += '<tbody><tr>';
-    card += '<td align="center" bgcolor="#202124" style="background:#202124;border-radius:6px;text-align:center;">';
-    card += '<a href="' + safeUrl + '" target="_blank" style="display:block;padding:11px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;text-decoration:none;white-space:nowrap;">';
-    card += '<span style="color:#ffd302;">&rarr;</span>&nbsp; ZOBRAZIT PRODUKT';
-    card += '</a>';
-    card += '</td>';
-    card += '</tr></tbody>';
-    card += '</table>';
-
-    card += '</td>';
-    card += '</tr>';
-
-    card += '</tbody>';
-    card += '</table>';
-
-    return card;
-}
-
-
     function buildOutput(products, label) {
 
         var html = "";
+        var safeLabel = escapeHtml(label);
 
+        function spacerCell() {
+            return '<td width="10" style="width:10px;padding:0;border:0;font-size:1px;line-height:1px;background:#ffffff;">&nbsp;</td>';
+        }
 
-        html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="680" align="center" style="width:680px;border:0;border-collapse:separate;border-spacing:0;margin:0 auto;background:#ffffff;">';
-
-        html += '<tbody>';
-
+        function emptyCell() {
+            return '<td width="220" style="width:220px;padding:0;border:0;background:#ffffff;">&nbsp;</td>';
+        }
 
         for (var i = 0; i < products.length; i += 3) {
 
+            var group = [
+                products[i] || null,
+                products[i + 1] || null,
+                products[i + 2] || null
+            ];
+
+            /*
+             * DŮLEŽITÉ:
+             * Celá trojice produktů je jedna společná tabulka.
+             * Každá obsahová část (štítek, název, obrázek, popis,
+             * kód, cena, DPH a CTA) má vlastní společný <tr>.
+             * Výška řádku se proto vždy řídí nejvyšším obsahem
+             * v dané trojici a všechny následující části začínají
+             * ve stejné horizontální úrovni.
+             */
+            html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="680" align="center" style="width:680px;table-layout:fixed;border:0;border-collapse:separate;border-spacing:0;margin:0 auto;background:#ffffff;">';
+            html += '<tbody>';
+
+            /* ŠTÍTKY + HORNÍ OKRAJ */
             html += '<tr>';
+            for (var c = 0; c < 3; c++) {
+                var p = group[c];
 
+                if (p) {
+                    html += '<td width="220" valign="top" style="width:220px;padding:15px 13px 0 13px;border-top:1px solid #e1e5e9;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;vertical-align:top;">';
+                    html += '<div style="height:27px;line-height:27px;">';
 
-            for (var column = 0; column < 3; column++) {
+                    if (safeLabel) {
+                        html += '<span style="display:inline-block;padding:5px 8px;background:#ffd302;border-radius:5px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;font-weight:bold;color:#111111;">';
+                        html += safeLabel;
+                        html += '</span>';
+                    } else {
+                        html += '&nbsp;';
+                    }
 
-                var index = i + column;
-
-
-                if (index < products.length) {
-
-                    html += '<td width="220" valign="top" style="width:220px;padding:0;vertical-align:top;">';
-
-                    html += buildCard(products[index], label);
-
+                    html += '</div>';
                     html += '</td>';
-
                 } else {
-
-                    html += '<td width="220" valign="top" style="width:220px;padding:0;vertical-align:top;">&nbsp;</td>';
-
+                    html += emptyCell();
                 }
 
-
-                if (column < 2) {
-
-                    html += '<td width="10" style="width:10px;padding:0;font-size:1px;line-height:1px;">&nbsp;</td>';
-
+                if (c < 2) {
+                    html += spacerCell();
                 }
-
             }
-
-
             html += '</tr>';
 
+            /* NÁZVY – SPOLEČNÝ ŘÁDEK */
+            html += '<tr>';
+            for (var c = 0; c < 3; c++) {
+                var p = group[c];
 
-            if (i + 3 < products.length) {
+                if (p) {
+                    var safeName = escapeHtml(p.name);
+                    var safeUrl = escapeHtml(p.url);
 
-                html += '<tr>';
+                    html += '<td width="220" valign="top" style="width:220px;padding:7px 13px 8px 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:bold;color:#111827;text-transform:uppercase;vertical-align:top;">';
+                    html += '<a href="' + safeUrl + '" target="_blank" style="color:#111827;text-decoration:none;">';
+                    html += safeName;
+                    html += '</a>';
+                    html += '</td>';
+                } else {
+                    html += emptyCell();
+                }
 
-                html += '<td colspan="5" height="18" style="height:18px;padding:0;font-size:1px;line-height:1px;">&nbsp;</td>';
-
-                html += '</tr>';
-
+                if (c < 2) {
+                    html += spacerCell();
+                }
             }
+            html += '</tr>';
 
+            /* OBRÁZKY – SPOLEČNÝ ŘÁDEK */
+            html += '<tr>';
+            for (var c = 0; c < 3; c++) {
+                var p = group[c];
+
+                if (p) {
+                    var safeName = escapeHtml(p.name);
+                    var safeImage = escapeHtml(p.image);
+                    var safeUrl = escapeHtml(p.url);
+
+                    html += '<td width="220" height="170" valign="middle" align="center" style="width:220px;height:170px;padding:0 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;text-align:center;vertical-align:middle;">';
+                    html += '<a href="' + safeUrl + '" target="_blank" style="display:block;text-decoration:none;">';
+                    html += '<img src="' + safeImage + '" width="190" alt="' + safeName + '" style="display:block;width:190px;max-width:190px;height:auto;margin:0 auto;border:0;outline:none;text-decoration:none;">';
+                    html += '</a>';
+                    html += '</td>';
+                } else {
+                    html += emptyCell();
+                }
+
+                if (c < 2) {
+                    html += spacerCell();
+                }
+            }
+            html += '</tr>';
+
+            /* POPISY – SPOLEČNÝ ŘÁDEK, VÝŠKU URČÍ NEJDELŠÍ POPIS */
+            html += '<tr>';
+            for (var c = 0; c < 3; c++) {
+                var p = group[c];
+
+                if (p) {
+                    var safeDescription = escapeHtml(p.description);
+
+                    html += '<td width="220" valign="top" style="width:220px;padding:8px 13px 12px 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:17px;color:#343a40;vertical-align:top;">';
+                    html += safeDescription || '&nbsp;';
+                    html += '</td>';
+                } else {
+                    html += emptyCell();
+                }
+
+                if (c < 2) {
+                    html += spacerCell();
+                }
+            }
+            html += '</tr>';
+
+            /* ODDĚLOVACÍ ČÁRY – SPOLEČNÝ ŘÁDEK */
+            html += '<tr>';
+            for (var c = 0; c < 3; c++) {
+                var p = group[c];
+
+                if (p) {
+                    html += '<td width="220" style="width:220px;padding:0 13px 9px 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;">';
+                    html += '<div style="height:1px;background:#e4e7ea;font-size:1px;line-height:1px;">&nbsp;</div>';
+                    html += '</td>';
+                } else {
+                    html += emptyCell();
+                }
+
+                if (c < 2) {
+                    html += spacerCell();
+                }
+            }
+            html += '</tr>';
+
+            /* KÓDY – SPOLEČNÝ ŘÁDEK */
+            html += '<tr>';
+            for (var c = 0; c < 3; c++) {
+                var p = group[c];
+
+                if (p) {
+                    var safeCode = escapeHtml(p.code);
+
+                    html += '<td width="220" valign="top" style="width:220px;padding:0 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:17px;color:#7a838d;vertical-align:top;">';
+                    html += 'Kód: ' + safeCode;
+                    html += '</td>';
+                } else {
+                    html += emptyCell();
+                }
+
+                if (c < 2) {
+                    html += spacerCell();
+                }
+            }
+            html += '</tr>';
+
+            /* CENY – SPOLEČNÝ ŘÁDEK */
+            html += '<tr>';
+            for (var c = 0; c < 3; c++) {
+                var p = group[c];
+
+                if (p) {
+                    var safePrice = escapeHtml(p.price);
+
+                    html += '<td width="220" valign="top" style="width:220px;padding:3px 13px 0 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:25px;line-height:30px;font-weight:bold;color:#000000;vertical-align:top;">';
+                    html += safePrice;
+                    html += '</td>';
+                } else {
+                    html += emptyCell();
+                }
+
+                if (c < 2) {
+                    html += spacerCell();
+                }
+            }
+            html += '</tr>';
+
+            /* DPH – SPOLEČNÝ ŘÁDEK */
+            html += '<tr>';
+            for (var c = 0; c < 3; c++) {
+                var p = group[c];
+
+                if (p) {
+                    html += '<td width="220" valign="top" style="width:220px;padding:0 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;color:#555d66;vertical-align:top;">';
+                    html += 's DPH';
+                    html += '</td>';
+                } else {
+                    html += emptyCell();
+                }
+
+                if (c < 2) {
+                    html += spacerCell();
+                }
+            }
+            html += '</tr>';
+
+            /* CTA – VŠECHNA TŘI TLAČÍTKA JSOU FYZICKY V JEDNOM <tr> */
+            html += '<tr>';
+            for (var c = 0; c < 3; c++) {
+                var p = group[c];
+
+                if (p) {
+                    var safeUrl = escapeHtml(p.url);
+
+                    html += '<td width="220" valign="bottom" style="width:220px;padding:11px 13px 16px 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;border-bottom:1px solid #e1e5e9;background:#ffffff;vertical-align:bottom;">';
+
+                    html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;border-collapse:separate;border-spacing:0;">';
+                    html += '<tbody><tr>';
+                    html += '<td align="center" bgcolor="#202124" style="background:#202124;border-radius:6px;text-align:center;">';
+                    html += '<a href="' + safeUrl + '" target="_blank" style="display:block;padding:11px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;text-decoration:none;white-space:nowrap;">';
+                    html += '<span style="color:#ffd302;">&rarr;</span>&nbsp; ZOBRAZIT PRODUKT';
+                    html += '</a>';
+                    html += '</td>';
+                    html += '</tr></tbody>';
+                    html += '</table>';
+
+                    html += '</td>';
+                } else {
+                    html += emptyCell();
+                }
+
+                if (c < 2) {
+                    html += spacerCell();
+                }
+            }
+            html += '</tr>';
+
+            html += '</tbody>';
+            html += '</table>';
+
+            /* MEZERA MEZI DALŠÍ TROJICÍ */
+            if (i + 3 < products.length) {
+                html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="680" align="center" style="width:680px;border:0;border-collapse:collapse;margin:0 auto;">';
+                html += '<tbody><tr><td height="18" style="height:18px;padding:0;font-size:1px;line-height:18px;">&nbsp;</td></tr></tbody>';
+                html += '</table>';
+            }
         }
 
-
-        html += '</tbody>';
-
-        html += '</table>';
-
-
         return html;
-
     }
 
 
