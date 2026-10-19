@@ -728,7 +728,7 @@ button:hover {
         var safeLabel = escapeHtml(label);
 
         function spacerCell() {
-            return '<td width="10" style="width:10px;padding:0;border:0;font-size:1px;line-height:1px;background:#ffffff;">&nbsp;</td>';
+            return '<td width="10" style="width:10px;padding:0;border:0;font-size:1px;line-height:1px;background:#f3f4f5;">&nbsp;</td>';
         }
 
         function emptyCell() {
@@ -744,28 +744,24 @@ button:hover {
             ];
 
             /*
-             * DŮLEŽITÉ:
-             * Celá trojice produktů je jedna společná tabulka.
-             * Každá obsahová část (štítek, název, obrázek, popis,
-             * kód, cena, DPH a CTA) má vlastní společný <tr>.
-             * Výška řádku se proto vždy řídí nejvyšším obsahem
-             * v dané trojici a všechny následující části začínají
-             * ve stejné horizontální úrovni.
+             * Tři produkty zůstávají vedle sebe v jedné společné tabulce.
+             * Každá obsahová část má vlastní společný <tr>, takže názvy,
+             * popisy, ceny i CTA zůstávají ve všech třech kartách zarovnané.
              */
-            html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="680" align="center" style="width:680px;table-layout:fixed;border:0;border-collapse:separate;border-spacing:0;margin:0 auto;background:#ffffff;">';
+            html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="680" align="center" style="width:680px;table-layout:fixed;border:0;border-collapse:separate;border-spacing:0;margin:0 auto;background:#f3f4f5;">';
             html += '<tbody>';
 
-            /* ŠTÍTKY + HORNÍ OKRAJ */
+            /* ŠTÍTKY */
             html += '<tr>';
             for (var c = 0; c < 3; c++) {
                 var p = group[c];
 
                 if (p) {
-                    html += '<td width="220" valign="top" style="width:220px;padding:15px 13px 0 13px;border-top:1px solid #e1e5e9;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;vertical-align:top;">';
-                    html += '<div style="height:27px;line-height:27px;">';
+                    html += '<td width="220" valign="top" style="width:220px;padding:13px 13px 0 13px;border:0;background:#ffffff;font-family:Arial,Helvetica,sans-serif;vertical-align:top;">';
+                    html += '<div style="height:25px;line-height:25px;">';
 
                     if (safeLabel) {
-                        html += '<span style="display:inline-block;padding:5px 8px;background:#ffd302;border-radius:5px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;font-weight:bold;color:#111111;">';
+                        html += '<span style="display:inline-block;padding:4px 8px;background:#ffd302;border-radius:4px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;font-weight:bold;color:#111111;">';
                         html += safeLabel;
                         html += '</span>';
                     } else {
@@ -793,7 +789,7 @@ button:hover {
                     var safeName = escapeHtml(p.name);
                     var safeUrl = escapeHtml(p.url);
 
-                    html += '<td width="220" valign="top" style="width:220px;padding:7px 13px 8px 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:bold;color:#111827;text-transform:uppercase;vertical-align:top;">';
+                    html += '<td width="220" valign="top" style="width:220px;padding:6px 13px 7px 13px;border:0;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:18px;font-weight:bold;color:#111827;text-transform:uppercase;vertical-align:top;">';
                     html += '<a href="' + safeUrl + '" target="_blank" style="color:#111827;text-decoration:none;">';
                     html += safeName;
                     html += '</a>';
@@ -818,9 +814,9 @@ button:hover {
                     var safeImage = escapeHtml(p.image);
                     var safeUrl = escapeHtml(p.url);
 
-                    html += '<td width="220" height="170" valign="middle" align="center" style="width:220px;height:170px;padding:0 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;text-align:center;vertical-align:middle;">';
+                    html += '<td width="220" height="155" valign="middle" align="center" style="width:220px;height:155px;padding:0 13px;border:0;background:#ffffff;text-align:center;vertical-align:middle;">';
                     html += '<a href="' + safeUrl + '" target="_blank" style="display:block;text-decoration:none;">';
-                    html += '<img src="' + safeImage + '" width="190" alt="' + safeName + '" style="display:block;width:190px;max-width:190px;height:auto;margin:0 auto;border:0;outline:none;text-decoration:none;">';
+                    html += '<img src="' + safeImage + '" width="175" alt="' + safeName + '" style="display:block;width:175px;max-width:175px;height:auto;margin:0 auto;border:0;outline:none;text-decoration:none;">';
                     html += '</a>';
                     html += '</td>';
                 } else {
@@ -833,7 +829,7 @@ button:hover {
             }
             html += '</tr>';
 
-            /* POPISY – SPOLEČNÝ ŘÁDEK, VÝŠKU URČÍ NEJDELŠÍ POPIS */
+            /* POPISY – VÝŠKU ŘÁDKU URČÍ NEJDELŠÍ POPIS */
             html += '<tr>';
             for (var c = 0; c < 3; c++) {
                 var p = group[c];
@@ -841,7 +837,7 @@ button:hover {
                 if (p) {
                     var safeDescription = escapeHtml(p.description);
 
-                    html += '<td width="220" valign="top" style="width:220px;padding:8px 13px 12px 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:17px;color:#343a40;vertical-align:top;">';
+                    html += '<td width="220" valign="top" style="width:220px;padding:7px 13px 11px 13px;border:0;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:17px;color:#343a40;vertical-align:top;">';
                     html += safeDescription || '&nbsp;';
                     html += '</td>';
                 } else {
@@ -854,13 +850,13 @@ button:hover {
             }
             html += '</tr>';
 
-            /* ODDĚLOVACÍ ČÁRY – SPOLEČNÝ ŘÁDEK */
+            /* JEDINÁ JEMNÁ ODDĚLOVACÍ ČÁRA */
             html += '<tr>';
             for (var c = 0; c < 3; c++) {
                 var p = group[c];
 
                 if (p) {
-                    html += '<td width="220" style="width:220px;padding:0 13px 9px 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;">';
+                    html += '<td width="220" style="width:220px;padding:0 13px 8px 13px;border:0;background:#ffffff;">';
                     html += '<div style="height:1px;background:#e4e7ea;font-size:1px;line-height:1px;">&nbsp;</div>';
                     html += '</td>';
                 } else {
@@ -873,7 +869,7 @@ button:hover {
             }
             html += '</tr>';
 
-            /* KÓDY – SPOLEČNÝ ŘÁDEK */
+            /* KÓDY */
             html += '<tr>';
             for (var c = 0; c < 3; c++) {
                 var p = group[c];
@@ -881,7 +877,7 @@ button:hover {
                 if (p) {
                     var safeCode = escapeHtml(p.code);
 
-                    html += '<td width="220" valign="top" style="width:220px;padding:0 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:17px;color:#7a838d;vertical-align:top;">';
+                    html += '<td width="220" valign="top" style="width:220px;padding:0 13px;border:0;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;color:#7a838d;vertical-align:top;">';
                     html += 'Kód: ' + safeCode;
                     html += '</td>';
                 } else {
@@ -894,7 +890,7 @@ button:hover {
             }
             html += '</tr>';
 
-            /* CENY – SPOLEČNÝ ŘÁDEK */
+            /* CENY */
             html += '<tr>';
             for (var c = 0; c < 3; c++) {
                 var p = group[c];
@@ -902,7 +898,7 @@ button:hover {
                 if (p) {
                     var safePrice = escapeHtml(p.price);
 
-                    html += '<td width="220" valign="top" style="width:220px;padding:3px 13px 0 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:25px;line-height:30px;font-weight:bold;color:#000000;vertical-align:top;">';
+                    html += '<td width="220" valign="top" style="width:220px;padding:2px 13px 0 13px;border:0;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:24px;line-height:29px;font-weight:bold;color:#000000;vertical-align:top;">';
                     html += safePrice;
                     html += '</td>';
                 } else {
@@ -915,13 +911,13 @@ button:hover {
             }
             html += '</tr>';
 
-            /* DPH – SPOLEČNÝ ŘÁDEK */
+            /* DPH */
             html += '<tr>';
             for (var c = 0; c < 3; c++) {
                 var p = group[c];
 
                 if (p) {
-                    html += '<td width="220" valign="top" style="width:220px;padding:0 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;color:#555d66;vertical-align:top;">';
+                    html += '<td width="220" valign="top" style="width:220px;padding:0 13px;border:0;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;color:#555d66;vertical-align:top;">';
                     html += 's DPH';
                     html += '</td>';
                 } else {
@@ -934,7 +930,7 @@ button:hover {
             }
             html += '</tr>';
 
-            /* CTA – VŠECHNA TŘI TLAČÍTKA JSOU FYZICKY V JEDNOM <tr> */
+            /* CTA – VŠECHNA TŘI TLAČÍTKA V JEDNOM SPOLEČNÉM ŘÁDKU */
             html += '<tr>';
             for (var c = 0; c < 3; c++) {
                 var p = group[c];
@@ -942,12 +938,12 @@ button:hover {
                 if (p) {
                     var safeUrl = escapeHtml(p.url);
 
-                    html += '<td width="220" valign="bottom" style="width:220px;padding:11px 13px 16px 13px;border-left:1px solid #e1e5e9;border-right:1px solid #e1e5e9;border-bottom:1px solid #e1e5e9;background:#ffffff;vertical-align:bottom;">';
+                    html += '<td width="220" valign="bottom" style="width:220px;padding:10px 13px 13px 13px;border:0;background:#ffffff;vertical-align:bottom;">';
 
                     html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;border-collapse:separate;border-spacing:0;">';
                     html += '<tbody><tr>';
-                    html += '<td align="center" bgcolor="#202124" style="background:#202124;border-radius:6px;text-align:center;">';
-                    html += '<a href="' + safeUrl + '" target="_blank" style="display:block;padding:11px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;text-decoration:none;white-space:nowrap;">';
+                    html += '<td align="center" bgcolor="#202124" style="background:#202124;border-radius:5px;text-align:center;">';
+                    html += '<a href="' + safeUrl + '" target="_blank" style="display:block;padding:10px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;text-decoration:none;white-space:nowrap;">';
                     html += '<span style="color:#ffd302;">&rarr;</span>&nbsp; ZOBRAZIT PRODUKT';
                     html += '</a>';
                     html += '</td>';
@@ -970,15 +966,14 @@ button:hover {
 
             /* MEZERA MEZI DALŠÍ TROJICÍ */
             if (i + 3 < products.length) {
-                html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="680" align="center" style="width:680px;border:0;border-collapse:collapse;margin:0 auto;">';
-                html += '<tbody><tr><td height="18" style="height:18px;padding:0;font-size:1px;line-height:18px;">&nbsp;</td></tr></tbody>';
+                html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="680" align="center" style="width:680px;border:0;border-collapse:collapse;margin:0 auto;background:#f3f4f5;">';
+                html += '<tbody><tr><td height="18" style="height:18px;padding:0;font-size:1px;line-height:18px;background:#f3f4f5;">&nbsp;</td></tr></tbody>';
                 html += '</table>';
             }
         }
 
         return html;
     }
-
 
     function convertProducts() {
 
