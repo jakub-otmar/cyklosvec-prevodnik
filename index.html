@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CYKLOŠVEC – převodník produktových dlaždic</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f3f4f6;
+    color: #202124;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.header {
+    background: #ffd302;
+    border-bottom: 1px solid #e1bc00;
+}
+
+.header-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 22px 24px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 25px;
+    line-height: 31px;
+    color: #111;
+}
+
+.header p {
+    margin: 6px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4b4200;
+}
+
+.container {
+    max-width: 1180px;
+    margin: 28px auto;
+    padding: 0 20px 50px;
+}
+
+.panel {
+    margin-bottom: 22px;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #dfe3e8;
+    border-radius: 10px;
+}
+
+.panel-title {
+    margin: 0 0 5px;
+    font-size: 19px;
+    line-height: 25px;
+    font-weight: bold;
+}
+
+.panel-description {
+    margin: 0 0 18px;
+    color: #69717a;
+    font-size: 13px;
+    line-height: 19px;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+select,
+input[type="text"] {
+    width: 100%;
+    max-width: 360px;
+    padding: 11px 12px;
+    border: 1px solid #c8cdd2;
+    border-radius: 5px;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    min-height: 260px;
+    padding: 14px;
+    border: 1px solid #c8cdd2;
+    border-radius: 6px;
+    background: #fbfbfb;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 18px;
+    resize: vertical;
+}
+
+textarea:focus,
+select:focus,
+input:focus {
+    outline: 2px solid #ffd302;
+    outline-offset: 1px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+button {
+    padding: 12px 18px;
+    border: 0;
+    border-radius: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-yellow {
+    background: #ffd302;
+    color: #111;
+}
+
+.btn-black {
+    background: #202124;
+    color: #fff;
+}
+
+.btn-light {
+    background: #eceff2;
+    color: #30343a;
+}
+
+button:hover {
+    opacity: .88;
+}
+
+.settings-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.setting {
+    min-width: 250px;
+}
+
+#customLabelWrap {
+    display: none;
+    margin-top: 12px;
+}
+
+.status {
+    display: none;
+    margin-top: 18px;
+    padding: 13px 15px;
+    border-left: 4px solid #ffd302;
+    background: #fff9d9;
+    font-size: 13px;
+    line-height: 20px;
+}
+
+.status.error {
+    border-left-color: #d93025;
+    background: #fff0ef;
+}
+
+.status.success {
+    border-left-color: #188038;
+    background: #edf7ee;
+}
+
+.preview-shell {
+    overflow-x: auto;
+    padding: 22px;
+    background: #eceff2;
+    border-radius: 7px;
+}
+
+.preview {
+    width: 700px;
+    min-height: 120px;
+    margin: 0 auto;
+    padding: 10px;
+    background: #fff;
+}
+
+.empty-preview {
+    padding: 40px 20px;
+    text-align: center;
+    color: #8a9199;
+    font-size: 13px;
+}
+
+.summary {
+    display: none;
+    margin-bottom: 16px;
+    padding: 11px 14px;
+    background: #f5f6f7;
+    border-radius: 5px;
+    font-size: 13px;
+    line-height: 20px;
+}
+
+.footer {
+    margin-top: 20px;
+    color: #858b91;
+    font-size: 11px;
+    text-align: center;
+}
+
+@media (max-width: 760px) {
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    .preview-shell {
+        padding: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="header-inner">
+        <h1>CYKLOŠVEC – převodník produktových dlaždic</h1>
+        <p>HeurekaFeed HTML → moderní produktové karty pro newsletter CYKLOŠVEC</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="panel">
+        <div class="panel-title">1. Nastavení dlaždic</div>
+        <div class="panel-description">
+            Vyberte označení produktů, které se zobrazí v horní části každé dlaždice.
+        </div>
+
+        <div class="settings-row">
+
+            <div class="setting">
+                <label for="productLabel">Štítek</label>
+
+                <select id="productLabel">
+                    <option value="NOVINKA">NOVINKA</option>
+                    <option value="OPĚT NASKLADNĚNO">OPĚT NASKLADNĚNO</option>
+                    <option value="AKCE">AKCE</option>
+                    <option value="VÝPRODEJ">VÝPRODEJ</option>
+                    <option value="DOPORUČUJEME">DOPORUČUJEME</option>
+                    <option value="custom">VLASTNÍ ŠTÍTEK</option>
+                    <option value="">BEZ ŠTÍTKU</option>
+                </select>
+
+                <div id="customLabelWrap">
+                    <label for="customLabel">Vlastní text štítku</label>
+                    <input
+                        id="customLabel"
+                        type="text"
+                        maxlength="35"
+                        placeholder="Např. NOVĚ SKLADEM"
+                    >
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="panel">
+        <div class="panel-title">2. Vložte HTML z HeurekaFeed generátoru</div>
+
+        <div class="panel-description">
+            Zkopírujte celý vygenerovaný HTML blok s produkty a vložte jej do pole níže.
+        </div>
+
+        <textarea
+            id="sourceHtml"
+            placeholder="Sem vložte HTML z HeurekaFeed generátoru..."
+        ></textarea>
+
+        <div class="controls">
+
+            <button
+                class="btn-yellow"
+                id="convertButton"
+                type="button">
+                PŘEVÉST DLAŽDICE
+            </button>
+
+            <button
+                class="btn-light"
+                id="clearButton"
+                type="button">
+                VYMAZAT
+            </button>
+
+        </div>
+
+        <div id="status" class="status"></div>
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-title">3. Náhled výsledku</div>
+
+        <div class="panel-description">
+            Zkontrolujte názvy, obrázky, popisy, objednací kódy, ceny a odkazy.
+        </div>
+
+        <div id="summary" class="summary"></div>
+
+        <div class="preview-shell">
+
+            <div id="preview" class="preview">
+
+                <div class="empty-preview">
+                    Zatím nebyly vytvořeny žádné produktové dlaždice.
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-title">4. HTML pro mailing</div>
+
+        <div class="panel-description">
+            Tento kód vložte do produktové části newsletteru CYKLOŠVEC.
+        </div>
+
+        <textarea
+            id="outputHtml"
+            readonly
+            placeholder="Zde se po převodu objeví hotový HTML kód..."
+        ></textarea>
+
+        <div class="controls">
+
+            <button
+                class="btn-black"
+                id="copyButton"
+                type="button">
+                KOPÍROVAT HTML
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        Interní nástroj CYKLOŠVEC • převod probíhá pouze ve vašem prohlížeči
+    </div>
+
+</div>
+
+
+<script>
+
+(function () {
+
+    var source = document.getElementById("sourceHtml");
+    var output = document.getElementById("outputHtml");
+    var preview = document.getElementById("preview");
+    var status = document.getElementById("status");
+    var summary = document.getElementById("summary");
+
+    var productLabel = document.getElementById("productLabel");
+    var customLabel = document.getElementById("customLabel");
+    var customLabelWrap = document.getElementById("customLabelWrap");
+
+    var convertButton = document.getElementById("convertButton");
+    var copyButton = document.getElementById("copyButton");
+    var clearButton = document.getElementById("clearButton");
+
+
+    productLabel.addEventListener("change", function () {
+
+        if (productLabel.value === "custom") {
+            customLabelWrap.style.display = "block";
+        } else {
+            customLabelWrap.style.display = "none";
+        }
+
+    });
+
+
+    convertButton.addEventListener("click", convertProducts);
+    copyButton.addEventListener("click", copyOutput);
+    clearButton.addEventListener("click", clearAll);
+
+
+    function cleanText(value) {
+
+        return String(value || "")
+            .replace(/\u00a0/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    function getLabel() {
+
+        if (productLabel.value === "custom") {
+            return cleanText(customLabel.value);
+        }
+
+        return productLabel.value;
+
+    }
+
+
+    function getDirectCells(row) {
+
+        var cells = [];
+
+        for (var i = 0; i < row.children.length; i++) {
+
+            if (
+                row.children[i].tagName &&
+                row.children[i].tagName.toLowerCase() === "td"
+            ) {
+                cells.push(row.children[i]);
+            }
+
+        }
+
+        return cells;
+
+    }
+
+
+    function findProductTable(doc) {
+
+        var exact = doc.querySelector("table#mailing_products");
+
+        if (exact) {
+            return exact;
+        }
+
+        var tables = doc.getElementsByTagName("table");
+
+        for (var i = 0; i < tables.length; i++) {
+
+            if (
+                tables[i].querySelector("h2") &&
+                tables[i].querySelector("img") &&
+                tables[i].querySelector("strong")
+            ) {
+                return tables[i];
+            }
+
+        }
+
+        return null;
+
+    }
+
+
+    function parseProducts(html) {
+
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, "text/html");
+
+        var table = findProductTable(doc);
+
+        if (!table) {
+            throw new Error(
+                "Nepodařilo se najít tabulku mailing_products."
+            );
+        }
+
+        var rows = table.rows;
+
+        if (!rows || rows.length < 4) {
+            throw new Error(
+                "Produktová tabulka nemá očekávanou strukturu."
+            );
+        }
+
+
+        var nameRow = null;
+        var imageRow = null;
+        var descriptionRow = null;
+        var detailRow = null;
+
+
+        for (var r = 0; r < rows.length; r++) {
+
+            var row = rows[r];
+
+            if (!nameRow && row.querySelector("h2")) {
+                nameRow = row;
+                continue;
+            }
+
+            if (!imageRow && row.querySelector("img")) {
+                imageRow = row;
+                continue;
+            }
+
+            if (!descriptionRow && row.querySelector("p")) {
+                descriptionRow = row;
+                continue;
+            }
+
+            if (
+                !detailRow &&
+                row.querySelector("strong") &&
+                cleanText(row.textContent).indexOf("Kč") !== -1
+            ) {
+                detailRow = row;
+            }
+
+        }
+
+
+        if (!nameRow) {
+            throw new Error("Nebyl nalezen řádek s názvy produktů.");
+        }
+
+        if (!imageRow) {
+            throw new Error("Nebyl nalezen řádek s obrázky produktů.");
+        }
+
+        if (!descriptionRow) {
+            throw new Error("Nebyl nalezen řádek s popisy produktů.");
+        }
+
+        if (!detailRow) {
+            throw new Error("Nebyl nalezen řádek s cenami produktů.");
+        }
+
+
+        var nameCells = getDirectCells(nameRow);
+        var imageCells = getDirectCells(imageRow);
+        var descriptionCells = getDirectCells(descriptionRow);
+        var detailCells = getDirectCells(detailRow);
+
+
+        var count = Math.max(
+            nameCells.length,
+            imageCells.length,
+            descriptionCells.length,
+            detailCells.length
+        );
+
+
+        var products = [];
+
+
+        for (var i = 0; i < count; i++) {
+
+            var nameCell = nameCells[i] || null;
+            var imageCell = imageCells[i] || null;
+            var descriptionCell = descriptionCells[i] || null;
+            var detailCell = detailCells[i] || null;
+
+
+            var name = "";
+            var description = "";
+            var image = "";
+            var url = "";
+            var code = "";
+            var price = "";
+
+
+            if (nameCell) {
+
+                var h2 = nameCell.querySelector("h2");
+
+                if (h2) {
+                    name = cleanText(h2.textContent);
+                }
+
+            }
+
+
+            if (imageCell) {
+
+                var img = imageCell.querySelector("img");
+
+                if (img) {
+                    image = img.getAttribute("src") || "";
+                }
+
+                var imageLink = imageCell.querySelector("a[href]");
+
+                if (imageLink) {
+                    url = imageLink.getAttribute("href") || "";
+                }
+
+            }
+
+
+            if (descriptionCell) {
+
+                var p = descriptionCell.querySelector("p");
+
+                if (p) {
+                    description = cleanText(p.textContent);
+                }
+
+            }
+
+
+            if (detailCell) {
+
+                var priceElement = detailCell.querySelector("strong");
+
+                if (priceElement) {
+                    price = cleanText(priceElement.textContent);
+                }
+
+
+                var actionDiv = detailCell.querySelector("div.action");
+
+                if (actionDiv && actionDiv.id) {
+
+                    var actionMatch = actionDiv.id.match(/^a_(.+)$/);
+
+                    if (actionMatch) {
+                        code = actionMatch[1];
+                    }
+
+                }
+
+
+                if (!code) {
+
+                    var directDivs = detailCell.children;
+
+                    for (var d = 0; d < directDivs.length; d++) {
+
+                        if (
+                            directDivs[d].tagName &&
+                            directDivs[d].tagName.toLowerCase() === "div" &&
+                            !directDivs[d].classList.contains("action")
+                        ) {
+
+                            var possibleCode =
+                                cleanText(directDivs[d].textContent);
+
+                            if (
+                                possibleCode &&
+                                possibleCode.length <= 40
+                            ) {
+                                code = possibleCode;
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+
+                var buyLink = detailCell.querySelector("a[href]");
+
+                if (!url && buyLink) {
+                    url = buyLink.getAttribute("href") || "";
+                }
+
+            }
+
+
+            if (name || image || price || code) {
+
+                products.push({
+                    name: name,
+                    description: description,
+                    image: image,
+                    url: url,
+                    code: code,
+                    price: price
+                });
+
+            }
+
+        }
+
+
+        return products;
+
+    }
+
+
+    function buildCard(product, label) {
+
+        var safeName = escapeHtml(product.name);
+        var safeDescription = escapeHtml(product.description);
+        var safeCode = escapeHtml(product.code);
+        var safePrice = escapeHtml(product.price);
+
+        var safeImage = escapeHtml(product.image);
+        var safeUrl = escapeHtml(product.url);
+        var safeLabel = escapeHtml(label);
+
+
+        var card = "";
+
+
+        card += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="220" style="width:220px;border:1px solid #e1e5e9;border-collapse:separate;border-spacing:0;border-radius:8px;background:#ffffff;">';
+
+        card += '<tbody>';
+
+        card += '<tr>';
+
+        card += '<td valign="top" style="padding:15px 13px 16px 13px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;vertical-align:top;">';
+
+
+        if (label) {
+
+            card += '<div style="height:27px;">';
+
+            card += '<span style="display:inline-block;padding:5px 8px;background:#ffd302;border-radius:5px;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;font-weight:bold;color:#111111;">';
+
+            card += safeLabel;
+
+            card += '</span>';
+
+            card += '</div>';
+
+        } else {
+
+            card += '<div style="height:27px;font-size:1px;line-height:1px;">&nbsp;</div>';
+
+        }
+
+
+        card += '<div style="height:67px;margin-top:9px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:20px;font-weight:bold;color:#111827;text-transform:uppercase;overflow:hidden;">';
+
+        if (product.url) {
+
+            card += '<a href="' + safeUrl + '" target="_blank" style="color:#111827;text-decoration:none;">';
+
+        }
+
+        card += safeName;
+
+        if (product.url) {
+            card += '</a>';
+        }
+
+        card += '</div>';
+
+
+        card += '<div style="height:190px;margin-top:7px;text-align:center;">';
+
+        if (product.url) {
+
+            card += '<a href="' + safeUrl + '" target="_blank" style="text-decoration:none;">';
+
+        }
+
+        if (product.image) {
+
+            card += '<img src="' + safeImage + '" width="180" alt="' + safeName + '" style="display:block;width:180px;max-width:180px;height:auto;margin:0 auto;border:0;outline:none;text-decoration:none;">';
+
+        }
+
+        if (product.url) {
+            card += '</a>';
+        }
+
+        card += '</div>';
+
+
+        card += '<div style="height:82px;margin-top:9px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:17px;color:#343a40;overflow:hidden;">';
+
+        card += safeDescription;
+
+        card += '</div>';
+
+
+        card += '<div style="height:1px;margin:11px 0 9px 0;background:#e4e7ea;font-size:1px;line-height:1px;">&nbsp;</div>';
+
+
+        card += '<div style="height:17px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:17px;color:#7a838d;">';
+
+        if (product.code) {
+
+            card += 'Kód: ' + safeCode;
+
+        } else {
+
+            card += '&nbsp;';
+
+        }
+
+        card += '</div>';
+
+
+        card += '<div style="margin-top:3px;font-family:Arial,Helvetica,sans-serif;font-size:25px;line-height:30px;font-weight:bold;color:#000000;">';
+
+        card += safePrice || '&nbsp;';
+
+        card += '</div>';
+
+
+        card += '<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:16px;color:#555d66;">';
+
+        card += 's DPH';
+
+        card += '</div>';
+
+
+        card += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;margin-top:11px;border-collapse:separate;border-spacing:0;">';
+
+        card += '<tbody><tr>';
+
+        card += '<td align="center" bgcolor="#0875e1" style="background:#0875e1;border-radius:6px;text-align:center;">';
+
+        if (product.url) {
+
+            card += '<a href="' + safeUrl + '" target="_blank" style="display:block;padding:11px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;text-decoration:none;white-space:nowrap;">';
+
+            card += '&rarr;&nbsp; ZOBRAZIT PRODUKT';
+
+            card += '</a>';
+
+        } else {
+
+            card += '<span style="display:block;padding:11px 3px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;font-weight:bold;color:#ffffff;">';
+
+            card += 'ZOBRAZIT PRODUKT';
+
+            card += '</span>';
+
+        }
+
+        card += '</td>';
+
+        card += '</tr></tbody></table>';
+
+
+        card += '</td>';
+
+        card += '</tr>';
+
+        card += '</tbody>';
+
+        card += '</table>';
+
+
+        return card;
+
+    }
+
+
+    function buildOutput(products, label) {
+
+        var html = "";
+
+
+        html += '<table role="presentation" border="0" cellspacing="0" cellpadding="0" width="680" align="center" style="width:680px;border:0;border-collapse:separate;border-spacing:0;margin:0 auto;background:#ffffff;">';
+
+        html += '<tbody>';
+
+
+        for (var i = 0; i < products.length; i += 3) {
+
+            html += '<tr>';
+
+
+            for (var column = 0; column < 3; column++) {
+
+                var index = i + column;
+
+
+                if (index < products.length) {
+
+                    html += '<td width="220" valign="top" style="width:220px;padding:0;vertical-align:top;">';
+
+                    html += buildCard(products[index], label);
+
+                    html += '</td>';
+
+                } else {
+
+                    html += '<td width="220" valign="top" style="width:220px;padding:0;vertical-align:top;">&nbsp;</td>';
+
+                }
+
+
+                if (column < 2) {
+
+                    html += '<td width="10" style="width:10px;padding:0;font-size:1px;line-height:1px;">&nbsp;</td>';
+
+                }
+
+            }
+
+
+            html += '</tr>';
+
+
+            if (i + 3 < products.length) {
+
+                html += '<tr>';
+
+                html += '<td colspan="5" height="18" style="height:18px;padding:0;font-size:1px;line-height:1px;">&nbsp;</td>';
+
+                html += '</tr>';
+
+            }
+
+        }
+
+
+        html += '</tbody>';
+
+        html += '</table>';
+
+
+        return html;
+
+    }
+
+
+    function convertProducts() {
+
+        var sourceValue = source.value.trim();
+
+
+        if (!sourceValue) {
+
+            showError(
+                "Nejprve vložte HTML z HeurekaFeed generátoru."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            var products = parseProducts(sourceValue);
+
+            if (!products.length) {
+
+                throw new Error(
+                    "V kódu nebyly nalezeny žádné produkty."
+                );
+
+            }
+
+
+            var label = getLabel();
+
+            var result = buildOutput(products, label);
+
+
+            output.value = result;
+
+            preview.innerHTML = result;
+
+
+            var complete = 0;
+
+
+            for (var i = 0; i < products.length; i++) {
+
+                if (
+                    products[i].name &&
+                    products[i].description &&
+                    products[i].image &&
+                    products[i].url &&
+                    products[i].code &&
+                    products[i].price
+                ) {
+                    complete++;
+                }
+
+            }
+
+
+            summary.style.display = "block";
+
+            summary.innerHTML =
+                '<strong>Nalezeno produktů:</strong> ' +
+                products.length +
+                ' &nbsp;&nbsp; ' +
+                '<strong>Kompletní data:</strong> ' +
+                complete +
+                ' / ' +
+                products.length;
+
+
+            showSuccess(
+                "Převod byl dokončen. Zkontrolujte náhled a potom zkopírujte výsledný HTML kód."
+            );
+
+
+        } catch (error) {
+
+            output.value = "";
+
+            preview.innerHTML =
+                '<div class="empty-preview">Náhled se nepodařilo vytvořit.</div>';
+
+            summary.style.display = "none";
+
+            showError(error.message);
+
+        }
+
+    }
+
+
+    function showSuccess(message) {
+
+        status.className = "status success";
+        status.style.display = "block";
+        status.textContent = message;
+
+    }
+
+
+    function showError(message) {
+
+        status.className = "status error";
+        status.style.display = "block";
+        status.textContent = message;
+
+    }
+
+
+    function copyOutput() {
+
+        if (!output.value) {
+
+            showError(
+                "Nejprve vytvořte produktové dlaždice."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            navigator.clipboard &&
+            navigator.clipboard.writeText
+        ) {
+
+            navigator.clipboard
+                .writeText(output.value)
+                .then(function () {
+
+                    showSuccess(
+                        "HTML kód byl zkopírován do schránky."
+                    );
+
+                })
+                .catch(function () {
+
+                    legacyCopy();
+
+                });
+
+        } else {
+
+            legacyCopy();
+
+        }
+
+    }
+
+
+    function legacyCopy() {
+
+        output.focus();
+        output.select();
+
+        try {
+
+            document.execCommand("copy");
+
+            showSuccess(
+                "HTML kód byl zkopírován do schránky."
+            );
+
+        } catch (error) {
+
+            showError(
+                "Automatické kopírování se nepodařilo. Označte výstupní kód a zkopírujte jej ručně."
+            );
+
+        }
+
+    }
+
+
+    function clearAll() {
+
+        var confirmed = window.confirm(
+            "Opravdu chcete vymazat vstup, výstup a náhled?"
+        );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        source.value = "";
+        output.value = "";
+
+        status.style.display = "none";
+        summary.style.display = "none";
+
+        preview.innerHTML =
+            '<div class="empty-preview">Zatím nebyly vytvořeny žádné produktové dlaždice.</div>';
+
+        source.focus();
+
+    }
+
+})();
+</script>
+
+</body>
+</html>
