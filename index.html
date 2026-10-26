@@ -501,226 +501,235 @@ button:hover {
         var table = findProductTable(doc);
 
         if (!table) {
-            throw new Error(
-                "Nepodařilo se najít tabulku mailing_products."
-            );
+            throw new Error("Nepodařilo se najít tabulku mailing_products.");
         }
 
         var rows = table.rows;
 
         if (!rows || rows.length < 4) {
-            throw new Error(
-                "Produktová tabulka nemá očekávanou strukturu."
+            throw new Error("Produktová tabulka nemá očekávanou strukturu.");
+        }
+
+        /*
+         * HeurekaFeed skládá produkty po trojicích:
+         * názvy -> obrázky -> popisy -> detail/cena,
+         * potom může následovat další stejný blok.
+         *
+         * Původní verze si zapamatovala pouze první nalezený řádek
+         * každého typu, takže zpracovala maximálně 3 produkty.
+         * Tato verze sbírá všechny kompletní bloky a každý zpracuje.
+         */
+        var blocks = [];
+        var currentBlock = {
+            nameRow: null,
+            imageRow: null,
+            descriptionRow: null,
+            detailRow: null
+        };
+
+        function blockHasData(block) {
+            return !!(
+                block.nameRow ||
+                block.imageRow ||
+                block.descriptionRow ||
+                block.detailRow
             );
         }
 
+        function blockIsComplete(block) {
+            return !!(
+                block.nameRow &&
+                block.imageRow &&
+                block.descriptionRow &&
+                block.detailRow
+            );
+        }
 
-        var nameRow = null;
-        var imageRow = null;
-        var descriptionRow = null;
-        var detailRow = null;
+        function saveCurrentBlock() {
+            if (blockIsComplete(currentBlock)) {
+                blocks.push(currentBlock);
+            }
 
+            currentBlock = {
+                nameRow: null,
+                imageRow: null,
+                descriptionRow: null,
+                detailRow: null
+            };
+        }
 
         for (var r = 0; r < rows.length; r++) {
 
             var row = rows[r];
 
-            if (!nameRow && row.querySelector("h2")) {
-                nameRow = row;
-                continue;
-            }
+            if (row.querySelector("h2")) {
 
-            if (!imageRow && row.querySelector("img")) {
-                imageRow = row;
-                continue;
-            }
+                if (blockHasData(currentBlock)) {
+                    saveCurrentBlock();
+                }
 
-            if (!descriptionRow && row.querySelector("p")) {
-                descriptionRow = row;
+                currentBlock.nameRow = row;
                 continue;
             }
 
             if (
-                !detailRow &&
+                currentBlock.nameRow &&
+                !currentBlock.imageRow &&
+                row.querySelector("img")
+            ) {
+                currentBlock.imageRow = row;
+                continue;
+            }
+
+            if (
+                currentBlock.nameRow &&
+                currentBlock.imageRow &&
+                !currentBlock.descriptionRow &&
+                row.querySelector("p")
+            ) {
+                currentBlock.descriptionRow = row;
+                continue;
+            }
+
+            if (
+                currentBlock.nameRow &&
+                currentBlock.imageRow &&
+                currentBlock.descriptionRow &&
+                !currentBlock.detailRow &&
                 row.querySelector("strong") &&
                 cleanText(row.textContent).indexOf("Kč") !== -1
             ) {
-                detailRow = row;
+                currentBlock.detailRow = row;
+                continue;
             }
-
         }
 
-
-        if (!nameRow) {
-            throw new Error("Nebyl nalezen řádek s názvy produktů.");
+        if (blockHasData(currentBlock)) {
+            saveCurrentBlock();
         }
 
-        if (!imageRow) {
-            throw new Error("Nebyl nalezen řádek s obrázky produktů.");
+        if (!blocks.length) {
+            throw new Error(
+                "Nepodařilo se najít žádný kompletní blok produktů."
+            );
         }
-
-        if (!descriptionRow) {
-            throw new Error("Nebyl nalezen řádek s popisy produktů.");
-        }
-
-        if (!detailRow) {
-            throw new Error("Nebyl nalezen řádek s cenami produktů.");
-        }
-
-
-        var nameCells = getDirectCells(nameRow);
-        var imageCells = getDirectCells(imageRow);
-        var descriptionCells = getDirectCells(descriptionRow);
-        var detailCells = getDirectCells(detailRow);
-
-
-        var count = Math.max(
-            nameCells.length,
-            imageCells.length,
-            descriptionCells.length,
-            detailCells.length
-        );
-
 
         var products = [];
 
+        for (var b = 0; b < blocks.length; b++) {
 
-        for (var i = 0; i < count; i++) {
+            var block = blocks[b];
 
-            var nameCell = nameCells[i] || null;
-            var imageCell = imageCells[i] || null;
-            var descriptionCell = descriptionCells[i] || null;
-            var detailCell = detailCells[i] || null;
+            var nameCells = getDirectCells(block.nameRow);
+            var imageCells = getDirectCells(block.imageRow);
+            var descriptionCells = getDirectCells(block.descriptionRow);
+            var detailCells = getDirectCells(block.detailRow);
 
+            var count = Math.max(
+                nameCells.length,
+                imageCells.length,
+                descriptionCells.length,
+                detailCells.length
+            );
 
-            var name = "";
-            var description = "";
-            var image = "";
-            var url = "";
-            var code = "";
-            var price = "";
+            for (var i = 0; i < count; i++) {
 
+                var nameCell = nameCells[i] || null;
+                var imageCell = imageCells[i] || null;
+                var descriptionCell = descriptionCells[i] || null;
+                var detailCell = detailCells[i] || null;
 
-            if (nameCell) {
+                var name = "";
+                var description = "";
+                var image = "";
+                var url = "";
+                var code = "";
+                var price = "";
 
-                var h2 = nameCell.querySelector("h2");
-
-                if (h2) {
-                    name = cleanText(h2.textContent);
+                if (nameCell) {
+                    var h2 = nameCell.querySelector("h2");
+                    if (h2) {
+                        name = cleanText(h2.textContent);
+                    }
                 }
 
-            }
-
-
-            if (imageCell) {
-
-                var img = imageCell.querySelector("img");
-
-                if (img) {
-                    image = img.getAttribute("src") || "";
-                }
-
-                var imageLink = imageCell.querySelector("a[href]");
-
-                if (imageLink) {
-                    url = imageLink.getAttribute("href") || "";
-                }
-
-            }
-
-
-            if (descriptionCell) {
-
-                var p = descriptionCell.querySelector("p");
-
-                if (p) {
-                    description = cleanText(p.textContent);
-                }
-
-            }
-
-
-            if (detailCell) {
-
-                var priceElement = detailCell.querySelector("strong");
-
-                if (priceElement) {
-                    price = cleanText(priceElement.textContent);
-                }
-
-
-                var actionDiv = detailCell.querySelector("div.action");
-
-                if (actionDiv && actionDiv.id) {
-
-                    var actionMatch = actionDiv.id.match(/^a_(.+)$/);
-
-                    if (actionMatch) {
-                        code = actionMatch[1];
+                if (imageCell) {
+                    var img = imageCell.querySelector("img");
+                    if (img) {
+                        image = img.getAttribute("src") || "";
                     }
 
+                    var imageLink = imageCell.querySelector("a[href]");
+                    if (imageLink) {
+                        url = imageLink.getAttribute("href") || "";
+                    }
                 }
 
+                if (descriptionCell) {
+                    var p = descriptionCell.querySelector("p");
+                    if (p) {
+                        description = cleanText(p.textContent);
+                    }
+                }
 
-                if (!code) {
+                if (detailCell) {
+                    var priceElement = detailCell.querySelector("strong");
+                    if (priceElement) {
+                        price = cleanText(priceElement.textContent);
+                    }
 
-                    var directDivs = detailCell.children;
-
-                    for (var d = 0; d < directDivs.length; d++) {
-
-                        if (
-                            directDivs[d].tagName &&
-                            directDivs[d].tagName.toLowerCase() === "div" &&
-                            !directDivs[d].classList.contains("action")
-                        ) {
-
-                            var possibleCode =
-                                cleanText(directDivs[d].textContent);
-
-                            if (
-                                possibleCode &&
-                                possibleCode.length <= 40
-                            ) {
-                                code = possibleCode;
-                                break;
-                            }
-
+                    var actionDiv = detailCell.querySelector("div.action");
+                    if (actionDiv && actionDiv.id) {
+                        var actionMatch = actionDiv.id.match(/^a_(.+)$/);
+                        if (actionMatch) {
+                            code = actionMatch[1];
                         }
-
                     }
 
+                    if (!code) {
+                        var directDivs = detailCell.children;
+
+                        for (var d = 0; d < directDivs.length; d++) {
+                            if (
+                                directDivs[d].tagName &&
+                                directDivs[d].tagName.toLowerCase() === "div" &&
+                                !directDivs[d].classList.contains("action")
+                            ) {
+                                var possibleCode =
+                                    cleanText(directDivs[d].textContent);
+
+                                if (
+                                    possibleCode &&
+                                    possibleCode.length <= 40
+                                ) {
+                                    code = possibleCode;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    var buyLink = detailCell.querySelector("a[href]");
+                    if (!url && buyLink) {
+                        url = buyLink.getAttribute("href") || "";
+                    }
                 }
 
-
-                var buyLink = detailCell.querySelector("a[href]");
-
-                if (!url && buyLink) {
-                    url = buyLink.getAttribute("href") || "";
+                if (name || image || price || code) {
+                    products.push({
+                        name: name,
+                        description: description,
+                        image: image,
+                        url: url,
+                        code: code,
+                        price: price
+                    });
                 }
-
             }
-
-
-            if (name || image || price || code) {
-
-                products.push({
-                    name: name,
-                    description: description,
-                    image: image,
-                    url: url,
-                    code: code,
-                    price: price
-                });
-
-            }
-
         }
 
-
         return products;
-
     }
-
 
     function buildOutput(products, label) {
 
